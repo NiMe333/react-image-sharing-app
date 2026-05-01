@@ -1,32 +1,62 @@
+import { Link } from "react-router-dom";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  Chip,
+  Button,
+} from "@mui/material";
+
 function Photo(props) {
   const p = props.photo;
 
   return (
-    <div className="card mb-3" style={{ width: "400px" }}>
-      <img
-        className="card-img-top"
-        src={"http://localhost:5001" + p.path}
+    <Card sx={{ width: 340, borderRadius: 3, boxShadow: 4 }}>
+      <CardMedia
+        component="img"
+        height="240"
+        image={"http://localhost:5001" + p.path}
         alt={p.name}
+        sx={{ objectFit: "cover" }}
       />
 
-      <div className="card-body">
-        <h5>{p.name}</h5>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          {p.name}
+        </Typography>
 
-        <p>{p.message}</p>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {p.message}
+        </Typography>
 
-        <p>
-          👍 {p.likes} | 👎 {p.dislikes}
-        </p>
+        <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+          <Chip label={`👍 ${p.likes}`} color="success" size="small" />
+          <Chip label={`👎 ${p.dislikes}`} color="error" size="small" />
+          <Chip label={`Glasovi: ${p.likes - p.dislikes}`} size="small" />
+        </Box>
 
-        <p>
+        <Typography variant="body2">
           <b>Avtor:</b> {p.postedBy?.username}
-        </p>
+        </Typography>
 
-        <p>
-          <small>{new Date(p.createdAt).toLocaleString()}</small>
-        </p>
-      </div>
-    </div>
+        <Typography variant="caption" color="text.secondary">
+          {new Date(p.createdAt).toLocaleString()}
+        </Typography>
+
+        <Box sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            component={Link}
+            to={"/photos/" + p._id}
+            fullWidth
+          >
+            Odpri sliko
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
 

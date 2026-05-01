@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserContext } from "./userContext";
 import Header from "./components/Header";
 import Photos from "./components/Photos";
@@ -8,6 +8,8 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import AddPhoto from "./components/AddPhoto";
+import PhotoDetails from "./components/PhotoDetails";
+import TrendingPhotos from "./components/TrendingPhotos";
 
 function App() {
   /**
@@ -24,11 +26,13 @@ function App() {
    * Context se osveži, vsakič ko osvežimo aplikacijo v brskalniku. Da preprečimo neželeno odjavo uporabnika,
    * lahko context trajno hranimo v localStorage v brskalniku.
    */
-  const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
+  const [user, setUser] = useState(
+    localStorage.user ? JSON.parse(localStorage.user) : null,
+  );
   const updateUserData = (userInfo) => {
     localStorage.setItem("user", JSON.stringify(userInfo));
     setUser(userInfo);
-  }
+  };
 
   /**
    * Na vrhu vključimo komponento Header, z naslovom in menijem.
@@ -40,10 +44,12 @@ function App() {
    */
   return (
     <BrowserRouter>
-      <UserContext.Provider value={{
-        user: user,
-        setUserContext: updateUserData
-      }}>
+      <UserContext.Provider
+        value={{
+          user: user,
+          setUserContext: updateUserData,
+        }}
+      >
         <div className="App">
           <Header title="My application"></Header>
           <Routes>
@@ -53,6 +59,8 @@ function App() {
             <Route path="/publish" element={<AddPhoto />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
             <Route path="/logout" element={<Logout />}></Route>
+            <Route path="/photos/:id" element={<PhotoDetails />}></Route>
+            <Route path="/trading" element={<TrendingPhotos />}></Route>
           </Routes>
         </div>
       </UserContext.Provider>

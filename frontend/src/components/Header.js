@@ -1,45 +1,53 @@
-import { useContext } from "react";
 import { UserContext } from "../userContext";
 import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 
 function Header(props) {
   return (
-    <header>
-      <h1>{props.title}</h1>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          {props.title}
+        </Typography>
+
+        <Box>
+          <Button color="inherit" component={Link} to="/">
+            Home
+          </Button>
+
+          <Button color="inherit" component={Link} to="/trending">
+            Trending
+          </Button>
+
           <UserContext.Consumer>
             {(context) =>
               context.user ? (
                 <>
-                  <li>
-                    <Link to="/publish">Publish</Link>
-                  </li>
-                  <li>
-                    <Link to="/profile">Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/logout">Logout</Link>
-                  </li>
+                  <Button color="inherit" component={Link} to="/publish">
+                    Publish
+                  </Button>
+                  <Button color="inherit" component={Link} to="/profile">
+                    Profile
+                  </Button>
+                  <Button color="inherit" component={Link} to="/logout">
+                    Logout
+                  </Button>
                 </>
               ) : (
                 <>
-                  <li>
-                    <Link to="/login">Login</Link>
-                  </li>
-                  <li>
-                    <Link to="/register">Register</Link>
-                  </li>
+                  <Button color="inherit" component={Link} to="/login">
+                    Login
+                  </Button>
+                  <Button color="inherit" component={Link} to="/register">
+                    Register
+                  </Button>
                 </>
               )
             }
           </UserContext.Consumer>
-        </ul>
-      </nav>
-    </header>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
 
