@@ -44,6 +44,21 @@ var photoSchema = new Schema(
         ref: "user",
       },
     ],
+
+    reports: {
+      type: Number,
+      default: 0,
+    },
+    reportedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+    hidden: {
+      type: Boolean,
+      default: false,
+    },
     comments: [
       {
         text: {

@@ -10,7 +10,7 @@ module.exports = {
    * userController.list()
    */
   list: function (req, res) {
-    UserModel.find(function (err, users) {
+    UserModel.find({}, "username email", function (err, users) {
       if (err) {
         return res.status(500).json({
           message: "Error when getting user.",
@@ -28,7 +28,7 @@ module.exports = {
   show: function (req, res) {
     var id = req.params.id;
 
-    UserModel.findOne({ _id: id }, function (err, user) {
+    UserModel.findOne({ _id: id }, "username email", function (err, user) {
       if (err) {
         return res.status(500).json({
           message: "Error when getting user.",
@@ -99,7 +99,7 @@ module.exports = {
       user.password = req.body.password ? req.body.password : user.password;
       user.email = req.body.email ? req.body.email : user.email;
 
-      user.save(function (err, user) {
+      user.save(function (err, updatedUser) {
         if (err) {
           return res.status(500).json({
             message: "Error when updating user.",
@@ -107,7 +107,11 @@ module.exports = {
           });
         }
 
-        return res.json(user);
+        return res.json({
+          _id: updatedUser._id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+        });
       });
     });
   },
@@ -162,21 +166,29 @@ module.exports = {
       },
     );
   },
+
   profile: function (req, res, next) {
-    UserModel.findById(req.session.userId).exec(function (error, user) {
-      if (error) {
-        return next(error);
-      } else {
-        if (user === null) {
-          var err = new Error("Not authorized, go back!");
-          err.status = 400;
-          return next(err);
-        } else {
-          //return res.render('user/profile', user);
-          return res.json(user);
+    if (!req.session.userId) {
+      return res.status(401).json({
+        message: "Not logged in",
+      });
+    }
+
+    UserModel.findById(req.session.userId, "username email").exec(
+      function (error, user) {
+        if (error) {
+          return next(error);
         }
-      }
-    });
+
+        if (!user) {
+          return res.status(404).json({
+            message: "User not found",
+          });
+        }
+
+        return res.json(user);
+      },
+    );
   },
 
   logout: function (req, res, next) {

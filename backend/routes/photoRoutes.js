@@ -18,18 +18,17 @@ function requiresLogin(req, res, next) {
 
 router.get("/", photoController.list);
 //router.get('/publish', requiresLogin, photoController.publish);
+router.get("/trending", photoController.trending);
 router.get("/:id", photoController.show);
 
 router.post("/", requiresLogin, upload.single("image"), photoController.create);
 
-router.put("/:id", photoController.update);
-
-router.delete("/:id", photoController.remove);
+router.put("/:id", requiresLogin, photoController.update);
+router.delete("/:id", requiresLogin, photoController.remove);
 
 router.post("/:id/like", requiresLogin, photoController.like);
-
 router.post("/:id/dislike", requiresLogin, photoController.dislike);
-
 router.post("/:id/comment", requiresLogin, photoController.addComment);
+router.post("/:id/report", requiresLogin, photoController.report);
 
 module.exports = router;
