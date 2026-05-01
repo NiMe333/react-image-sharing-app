@@ -27,4 +27,4 @@ yarn-error.log*
 .idea/
 
 # misc
-public/images/
+backend/public/images/

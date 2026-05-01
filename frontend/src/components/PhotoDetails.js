@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 import {
   Container,
@@ -21,6 +21,7 @@ function PhotoDetails() {
 
   const [photo, setPhoto] = useState(null);
   const [comment, setComment] = useState("");
+  const [deleted, setDeleted] = useState(false);
 
   async function getPhoto() {
     const res = await fetch("http://localhost:5001/photos/" + id, {
@@ -62,6 +63,23 @@ function PhotoDetails() {
     alert("Slika je bila prijavljena.");
   }
 
+  async function deletePhoto() {
+    if (!window.confirm("Ali res želiš izbrisati to sliko?")) {
+      return;
+    }
+
+    const res = await fetch("http://localhost:5001/photos/" + id, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      setDeleted(true);
+    } else {
+      alert("Slike ni mogoče izbrisati.");
+    }
+  }
+
   async function addComment(e) {
     e.preventDefault();
 
@@ -81,7 +99,9 @@ function PhotoDetails() {
     setComment("");
     getPhoto();
   }
-
+  if (deleted) {
+    return <Navigate replace to="/" />;
+  }
   if (!photo) {
     return (
       <Container sx={{ mt: 4 }}>
@@ -116,7 +136,6 @@ function PhotoDetails() {
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
             <Chip label={`👍 ${photo.likes}`} color="success" />
             <Chip label={`👎 ${photo.dislikes}`} color="error" />
-            <Chip label={`Glasovi: ${photo.likes - photo.dislikes}`} />
           </Box>
 
           <Typography variant="body2">
@@ -140,6 +159,12 @@ function PhotoDetails() {
               <Button variant="outlined" color="warning" onClick={reportPhoto}>
                 Prijavi neprimerno vsebino
               </Button>
+
+              {userContext.user?._id === photo.postedBy?._id && (
+                <Button variant="contained" color="error" onClick={deletePhoto}>
+                  Izbriši sliko
+                </Button>
+              )}
             </Box>
           )}
         </CardContent>

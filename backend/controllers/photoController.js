@@ -151,10 +151,19 @@ module.exports = {
         });
       }
 
-      if (photo.postedBy.toString() !== req.session.userId) {
-        return res.status(403).json({ message: "Forbidden" });
+      if (!req.session.userId) {
+        return res.status(401).json({
+          message: "Login required",
+        });
       }
 
+      if (photo.postedBy.toString() !== req.session.userId) {
+        return res.status(403).json({
+          message: "Only author can delete this photo",
+        });
+      }
+
+      // DELETE
       PhotoModel.findByIdAndRemove(id, function (err) {
         if (err) {
           return res.status(500).json({
