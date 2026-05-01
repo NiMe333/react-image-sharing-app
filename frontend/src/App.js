@@ -60,7 +60,7 @@ function App() {
             <Route path="/profile" element={<Profile />}></Route>
             <Route path="/logout" element={<Logout />}></Route>
             <Route path="/photos/:id" element={<PhotoDetails />}></Route>
-            <Route path="/trading" element={<TrendingPhotos />}></Route>
+            <Route path="/trending" element={<TrendingPhotos />}></Route>
           </Routes>
         </div>
       </UserContext.Provider>

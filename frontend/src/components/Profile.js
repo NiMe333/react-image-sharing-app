@@ -51,10 +51,6 @@ function Profile() {
         <Typography variant="body1" sx={{ mb: 1 }}>
           <b>Email:</b> {profile.email}
         </Typography>
-
-        <Typography variant="body2" color="text.secondary">
-          To je tvoj uporabniški profil.
-        </Typography>
       </Paper>
     </Container>
   );
