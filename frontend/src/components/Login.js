@@ -20,8 +20,8 @@ function Login() {
       }),
     });
     const data = await res.json();
-    if (data._id !== undefined) {
-      userContext.setUserContext(data);
+    if (data.user && data.user._id) {
+      userContext.setUserContext(data.user);
     } else {
       setUsername("");
       setPassword("");

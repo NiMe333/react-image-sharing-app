@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 function Register() {
-  const [username, setUsername] = useState([]);
-  const [password, setPassword] = useState([]);
-  const [email, setEmail] = useState([]);
-  const [error, setError] = useState([]);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   async function Register(e) {
     e.preventDefault();
-    const res = await fetch("http://localhost:5001/users", {
+    const res = await fetch("http://localhost:5001/users/register", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -19,8 +19,8 @@ function Register() {
       }),
     });
     const data = await res.json();
-    if (data._id !== undefined) {
-      window.location.href = "/";
+    if (data.user && data.user._id) {
+      window.location.href = "/login";
     } else {
       setUsername("");
       setPassword("");
@@ -52,7 +52,7 @@ function Register() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <input type="submit" name="submit" value="Login" />
+      <input type="submit" name="submit" value="Register" />{" "}
       <label>{error}</label>
     </form>
   );
