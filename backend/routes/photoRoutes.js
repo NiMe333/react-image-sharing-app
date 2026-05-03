@@ -17,7 +17,6 @@ function requiresLogin(req, res, next) {
 }
 
 router.get("/", photoController.list);
-//router.get('/publish', requiresLogin, photoController.publish);
 router.get("/trending", photoController.trending);
 router.get("/:id", photoController.show);
 

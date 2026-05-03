@@ -135,11 +135,11 @@ module.exports = {
   },
 
   showRegister: function (req, res) {
-    res.render("user/register");
+    res.render("user/register"); // vrne html register
   },
 
   showLogin: function (req, res) {
-    res.render("user/login");
+    res.render("user/login"); // vrne html login
   },
 
   login: function (req, res, next) {

@@ -32,6 +32,11 @@ function PhotoDetails() {
     setPhoto(data);
   }
 
+  if (!res.ok) {
+    alert("Slike ni mogoče naložiti.");
+    return;
+  }
+
   useEffect(() => {
     getPhoto();
   }, []);
@@ -42,6 +47,12 @@ function PhotoDetails() {
       credentials: "include",
     });
 
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.message || "Napaka pri like.");
+      return;
+    }
+
     getPhoto();
   }
 
@@ -51,16 +62,35 @@ function PhotoDetails() {
       credentials: "include",
     });
 
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.message || "Napaka pri like.");
+      return;
+    }
+
     getPhoto();
   }
 
   async function reportPhoto() {
-    await fetch("http://localhost:5001/photos/" + id + "/report", {
+    const res = await fetch("http://localhost:5001/photos/" + id + "/report", {
       method: "POST",
       credentials: "include",
     });
 
-    alert("Slika je bila prijavljena.");
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Slika je bila prijavljena.");
+      return;
+    }
+
+    if (data.message === "Already reported") {
+      alert("To sliko si že prijavil.");
+    } else if (data.message === "Login required") {
+      alert("Za prijavo slike moraš biti prijavljen.");
+    } else {
+      alert("Prijava slike ni uspela.");
+    }
   }
 
   async function deletePhoto() {
@@ -85,7 +115,7 @@ function PhotoDetails() {
 
     if (!comment.trim()) return;
 
-    await fetch("http://localhost:5001/photos/" + id + "/comment", {
+    const res = await fetch("http://localhost:5001/photos/" + id + "/comment", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -96,9 +126,16 @@ function PhotoDetails() {
       }),
     });
 
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.message || "Napaka pri komentarju.");
+      return;
+    }
+
     setComment("");
     getPhoto();
   }
+
   if (deleted) {
     return <Navigate replace to="/" />;
   }

@@ -34,7 +34,6 @@ function Photo(props) {
         <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
           <Chip label={`👍 ${p.likes}`} color="success" size="small" />
           <Chip label={`👎 ${p.dislikes}`} color="error" size="small" />
-          <Chip label={`Glasovi: ${p.likes - p.dislikes}`} size="small" />
         </Box>
 
         <Typography variant="body2">

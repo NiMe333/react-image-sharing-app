@@ -6,6 +6,7 @@ function TrendingPhotos() {
   const [photos, setPhotos] = useState([]);
 
   useEffect(function () {
+    // koda se izvede enkrat, ko se komponenta naloži
     const getTrendingPhotos = async function () {
       const res = await fetch("http://localhost:5001/photos/trending", {
         credentials: "include",

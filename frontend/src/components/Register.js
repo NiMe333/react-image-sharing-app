@@ -17,8 +17,8 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  async function Register(e) {
-    e.preventDefault();
+  async function handleRegister(e) {
+    e.preventDefault(); // prepreči HTML submit, ki bi refreshal stran
 
     const res = await fetch("http://localhost:5001/users/register", {
       method: "POST",
@@ -29,7 +29,7 @@ function Register() {
 
     const data = await res.json();
 
-    if (data.user && data.user._id) {
+    if (data.user && data.user._id && res.ok) {
       setSuccess(true);
     } else {
       setUsername("");
@@ -56,7 +56,7 @@ function Register() {
           </Alert>
         )}
 
-        <Box component="form" onSubmit={Register}>
+        <Box component="form" onSubmit={handleRegister}>
           <TextField
             fullWidth
             label="Email"

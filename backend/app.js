@@ -27,7 +27,7 @@ var photosRouter = require("./routes/photoRoutes");
 
 var app = express();
 
-var cors = require("cors");
+var cors = require("cors"); // React na localhost:3000 lahko kliče backend
 
 app.use(
   cors({
@@ -63,7 +63,7 @@ app.use(
 );
 
 //Shranimo sejne spremenljivke v locals
-//Tako lahko do njih dostopamo v vseh view-ih (glej layout.hbs)
+//Tako lahko do njih dostopamo v vseh view-ih
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();

@@ -112,11 +112,6 @@ module.exports = {
 
         photo.name = req.body.name ? req.body.name : photo.name;
         photo.message = req.body.message ? req.body.message : photo.message;
-        photo.path = req.body.path ? req.body.path : photo.path;
-        photo.postedBy = req.body.postedBy ? req.body.postedBy : photo.postedBy;
-        photo.views = req.body.views ? req.body.views : photo.views;
-        photo.likes = req.body.likes ? req.body.likes : photo.likes;
-        photo.dislikes = req.body.dislikes ? req.body.dislikes : photo.dislikes;
 
         photo.save(function (err, updatedPhoto) {
           if (err) {
@@ -177,30 +172,35 @@ module.exports = {
     });
   },
 
+  /**
+   * photoController.publish()
+   */
   publish: function (req, res) {
     return res.render("photo/publish");
   },
 
+  /**
+   * photoController.like()
+   */
   like: async function (req, res) {
     if (!req.session.userId) {
       return res.status(401).json({ message: "Login required" });
     }
 
     const userId = req.session.userId;
-
     const photo = await PhotoModel.findById(req.params.id);
 
     if (!photo) return res.status(404).json({ message: "Not found" });
 
-    const hasLiked = photo.likedBy.includes(userId);
+    const hasLiked = photo.likedBy.includes(userId); // ali je uporabnik že lajkal
     const hasDisliked = photo.dislikedBy.includes(userId);
 
-    // TOGGLE OFF LIKE
+    // Če je že likal se like odstrani
     if (hasLiked) {
       photo.likedBy = photo.likedBy.filter((id) => id.toString() !== userId);
       photo.likes -= 1;
     }
-    // SWITCH FROM DISLIKE → LIKE
+    // Zamenja DISLIKE → LIKE
     else {
       photo.likedBy.push(userId);
       photo.likes += 1;
@@ -231,14 +231,14 @@ module.exports = {
     const hasDisliked = photo.dislikedBy.includes(userId);
     const hasLiked = photo.likedBy.includes(userId);
 
-    // TOGGLE OFF DISLIKE
+    // Če je DISLIKE
     if (hasDisliked) {
       photo.dislikedBy = photo.dislikedBy.filter(
         (id) => id.toString() !== userId,
       );
       photo.dislikes -= 1;
     }
-    // SWITCH FROM LIKE → DISLIKE
+    // Zamenja LIKE → DISLIKE
     else {
       photo.dislikedBy.push(userId);
       photo.dislikes += 1;
@@ -254,6 +254,10 @@ module.exports = {
   },
 
   addComment: function (req, res) {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Login required" });
+    }
+
     if (!req.body.text) {
       return res.status(400).json({ message: "Comment required" });
     }
@@ -286,9 +290,7 @@ module.exports = {
 
       const rankedPhotos = photos.map(function (photo) {
         const votes = photo.likes - photo.dislikes;
-
         const ageInHours = (now - new Date(photo.createdAt)) / (1000 * 60 * 60);
-
         const score = votes / Math.pow(ageInHours + 2, 1.5);
 
         return {
@@ -337,7 +339,7 @@ module.exports = {
       photo.reportedBy.push(userId);
       photo.reports += 1;
 
-      // ⚠️ threshold
+      // pogoj kdaj postane hidden
       if (photo.reports >= 3) {
         photo.hidden = true;
       }

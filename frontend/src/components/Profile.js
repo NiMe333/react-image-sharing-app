@@ -12,16 +12,33 @@ import {
 
 function Profile() {
   const userContext = useContext(UserContext);
+
   const [profile, setProfile] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(function () {
     const getProfile = async function () {
-      const res = await fetch("http://localhost:5001/users/profile", {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setProfile(data);
+      try {
+        const res = await fetch("http://localhost:5001/users/profile", {
+          credentials: "include",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || "Profila ni mogoče naložiti.");
+          return;
+        }
+
+        setProfile(data);
+      } catch (err) {
+        setError("Napaka pri povezavi s strežnikom.");
+      } finally {
+        setLoading(false);
+      }
     };
+
     getProfile();
   }, []);
 
@@ -29,10 +46,18 @@ function Profile() {
     return <Navigate replace to="/login" />;
   }
 
-  if (!profile) {
+  if (loading) {
     return (
       <Container sx={{ mt: 6 }}>
         <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Typography color="error">{error}</Typography>
       </Container>
     );
   }
