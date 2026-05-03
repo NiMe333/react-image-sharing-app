@@ -302,8 +302,7 @@ module.exports = {
       rankedPhotos.sort(function (a, b) {
         return b.score - a.score;
       });
-
-      return res.json(rankedPhotos);
+      return res.json(rankedPhotos.slice(0, 5));
     } catch (err) {
       return res.status(500).json({
         message: "Error when getting trending photos",
