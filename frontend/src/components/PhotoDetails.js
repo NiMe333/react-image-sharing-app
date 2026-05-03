@@ -28,13 +28,13 @@ function PhotoDetails() {
       credentials: "include",
     });
 
+    if (!res.ok) {
+      alert("Slike ni mogoče naložiti.");
+      return;
+    }
+
     const data = await res.json();
     setPhoto(data);
-  }
-
-  if (!res.ok) {
-    alert("Slike ni mogoče naložiti.");
-    return;
   }
 
   useEffect(() => {
@@ -42,7 +42,7 @@ function PhotoDetails() {
   }, []);
 
   async function likePhoto() {
-    await fetch("http://localhost:5001/photos/" + id + "/like", {
+    const res = await fetch("http://localhost:5001/photos/" + id + "/like", {
       method: "POST",
       credentials: "include",
     });
@@ -57,7 +57,7 @@ function PhotoDetails() {
   }
 
   async function dislikePhoto() {
-    await fetch("http://localhost:5001/photos/" + id + "/dislike", {
+    const res = await fetch("http://localhost:5001/photos/" + id + "/dislike", {
       method: "POST",
       credentials: "include",
     });
